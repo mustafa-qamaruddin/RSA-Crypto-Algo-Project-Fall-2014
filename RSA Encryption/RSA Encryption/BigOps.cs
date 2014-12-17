@@ -130,5 +130,26 @@ namespace RSA_Encryption
 
             return C.toVString();
         }
+
+        /**********************************
+           div(a, b) 
+            {
+                if (a < b)
+                    return (0, a)
+                (q, r) = div(a, 2b)
+                q = 2q
+                if (r < b)
+                    return (q, r)
+                else
+                    return (q + 1, r - b)
+            }
+        **/
+        public string div(BigInteger A, BigInteger B)
+        {
+            Vector C = new Vector();
+            C.display();
+            return C.toVString();
+        }
+
     }
 }
