@@ -71,8 +71,8 @@ namespace RSA_Encryption
         {
             // test_bigint_constr();
             // test_bigint_add();
-            // test_bigint_sub();
-            test_bigint_parity();
+            test_bigint_sub();
+            // test_bigint_parity();
         }
 
         public void test_bigint_constr()

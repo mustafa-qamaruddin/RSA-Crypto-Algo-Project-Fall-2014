@@ -100,26 +100,30 @@ namespace RSA_Encryption
                 int x = A.get_data().at(i);
                 if (borrow != 0)
                 {
-                    x = x - 1;
+                    if (A.get_data().at(i) == 0)
+                    {
+                        x = base_n - 1;  // 0 borrowed 10 from i-1, then lent one to i+1 = 9
+                    }
+                    else
+                    {
+                        x = x - 1;
+                        borrow = 0;
+                    }
                 }
                 int y = B.get_data().at(i);
                 if (x < y)
                 {
-                    // use borrow
-                    /**
-                    int k = i;
-                    int m = A.get_data().at(k);
-                    while (k >= 0 &&  m == 0) {
-                        A.get_data().at(k, m + 
-                        k = k - 1;
+                    if (i == 0)
+                    {
+                        throw new Exception("Unsupported Op.");
                     }
-                     **/
+                    // use borrow
                     borrow = base_n;
                     x = borrow + x;
                 }
                 else
                 {
-                    borrow = 0;
+                    // borrow = 0;
                 }
                 int diff =  x - y;
                 
