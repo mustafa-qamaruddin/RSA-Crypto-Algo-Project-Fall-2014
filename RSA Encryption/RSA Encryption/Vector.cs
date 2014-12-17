@@ -254,6 +254,19 @@ namespace RSA_Encryption
             }
         }
 
+        public bool at(int index, int value)
+        {
+            if (index < size)
+            {
+                array[index] = value;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         /**
         public int operator [](int index)
         {

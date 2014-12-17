@@ -71,7 +71,8 @@ namespace RSA_Encryption
         {
             // test_bigint_constr();
             // test_bigint_add();
-            test_bigint_sub();
+            // test_bigint_sub();
+            test_bigint_parity();
         }
 
         public void test_bigint_constr()
@@ -119,6 +120,13 @@ namespace RSA_Encryption
             by.get_data().display();
             BigOps bops = new BigOps();
             Console.WriteLine(bops.sub(bx, by));
+        }
+
+        public void test_bigint_parity()
+        {
+            string x = Console.ReadLine();
+            BigInteger bx = new BigInteger(x);
+            Console.WriteLine(bx.check_parity());
         }
 
         public void test_bigops()

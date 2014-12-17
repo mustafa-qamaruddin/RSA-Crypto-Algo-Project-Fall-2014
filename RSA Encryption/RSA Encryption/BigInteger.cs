@@ -54,6 +54,14 @@ namespace RSA_Encryption
             mode = _mode;
         }
 
+        //0 = even
+        //1 = odd
+        public int check_parity()
+        {
+            int x = data.at(data.get_size() - 1);
+            return (x % 2);
+        }
+
         private Vector data;
         /**
          * mode = false ; normal

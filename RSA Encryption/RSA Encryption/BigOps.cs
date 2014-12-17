@@ -106,7 +106,15 @@ namespace RSA_Encryption
                 if (x < y)
                 {
                     // use borrow
-                    borrow = power(base_n, position);
+                    /**
+                    int k = i;
+                    int m = A.get_data().at(k);
+                    while (k >= 0 &&  m == 0) {
+                        A.get_data().at(k, m + 
+                        k = k - 1;
+                    }
+                     **/
+                    borrow = base_n;
                     x = borrow + x;
                 }
                 else
