@@ -49,6 +49,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RSA.cs" />
+    <Compile Include="Stringer.cs" />
     <Compile Include="UnitTesting.cs" />
     <Compile Include="Vector.cs" />
   </ItemGroup>
@@ -58,6 +59,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="files\out\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="files\in\strings.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

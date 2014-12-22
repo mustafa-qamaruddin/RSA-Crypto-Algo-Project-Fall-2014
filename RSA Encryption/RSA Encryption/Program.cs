@@ -15,6 +15,7 @@ namespace RSA_Encryption
             ut.test_bigops();
             ut.test_rsa();
             ut.test_files();
+            ut.test_stringer();
         }
     }
 }

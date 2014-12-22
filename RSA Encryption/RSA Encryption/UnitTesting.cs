@@ -307,5 +307,24 @@ namespace RSA_Encryption
             Files f = new Files();
             f.read();
         }
+
+        public void test_stringer()
+        {
+            // test_stringer_chartoascii();
+            // test_stringer_asciitochars();
+        }
+
+        public void test_stringer_chartoascii() {
+            string x = Console.ReadLine();
+            Stringer s = new Stringer();
+            Console.WriteLine(s.chartoascii(x).get_data().toFString());
+        }
+
+        public void test_stringer_asciitochars()
+        {
+            string x = Console.ReadLine();
+            Stringer s = new Stringer();
+            Console.WriteLine(s.asciitochars(x));
+        }
     }
 }
