@@ -7,7 +7,7 @@ namespace RSA_Encryption
 {
     class BigInteger
     {
-        public BigInteger(string a)
+        public BigInteger(string a = "")
         {
             bops = new BigOps();
             data = new Vector();
@@ -60,6 +60,79 @@ namespace RSA_Encryption
         {
             int x = data.at(data.get_size() - 1);
             return (x % 2);
+        }
+
+        /*
+         * [from, to[
+         **/
+        public bool slice(ref BigInteger ret, int from, int to)
+        {
+            if( to < from)
+                return false;
+            for (int i = from; i < to; i++)
+            {
+                ret.get_data().insert(data.at(i));
+            }
+            return true;
+        }
+
+        public bool halve(ref BigInteger p1, ref BigInteger p2)
+        {
+            return slice(ref p1, 0, data.get_size()/2) && slice(ref p2, data.get_size()/2, data.get_size() );
+        }
+
+        public static bool operator< (BigInteger lhs, BigInteger rhs)
+        {
+            lhs.trim();
+            rhs.trim();
+            if (lhs.get_data().get_size() < rhs.get_data().get_size())
+            {
+                return true;
+            }
+            else if (lhs.get_data().get_size() > rhs.get_data().get_size())
+            {
+                return false;
+            }
+            else
+            {
+                int i = 0;
+                while (i < lhs.get_data().get_size() && lhs.get_data().at(i) == rhs.get_data().at(i))
+                {
+                    i++;
+                }
+                return (lhs.get_data().at(i) < rhs.get_data().at(i));
+            }
+        }
+
+        public static bool operator >(BigInteger lhs, BigInteger rhs)
+        {
+            lhs.trim();
+            rhs.trim();
+            if (lhs.get_data().get_size() > rhs.get_data().get_size())
+            {
+                return true;
+            }
+            else if (lhs.get_data().get_size() < rhs.get_data().get_size())
+            {
+                return false;
+            }
+            else
+            {
+                int i = 0;
+                while (i < lhs.get_data().get_size() && lhs.get_data().at(i) == rhs.get_data().at(i))
+                {
+                    i++;
+                }
+                return (lhs.get_data().at(i) > rhs.get_data().at(i));
+            }
+        }
+
+        public void trim()
+        {
+            while (data.get_size() > 1 && data.at(0) == 0)
+            {
+                data.pop_front();
+            }
         }
 
         private Vector data;

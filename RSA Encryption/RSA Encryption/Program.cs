@@ -13,6 +13,8 @@ namespace RSA_Encryption
             ut.test_vector();
             ut.test_bigint();
             ut.test_bigops();
+            ut.test_rsa();
+            ut.test_files();
         }
     }
 }

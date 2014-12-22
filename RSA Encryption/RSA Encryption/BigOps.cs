@@ -7,9 +7,20 @@ namespace RSA_Encryption
 {
     class BigOps
     {
-        public string add(BigInteger A, BigInteger B)
+        public string add_ret_str(BigInteger A, BigInteger B)
         {
-            Vector C = new Vector();
+            BigInteger ret = add(A, B);
+            return ret.get_data().toFString();
+        }
+
+        public BigInteger add(BigInteger A, int x)
+        {
+            return add(A, new BigInteger(x.ToString()));
+        }
+
+        public BigInteger add(BigInteger A, BigInteger B)
+        {
+            BigInteger ret = new BigInteger("");
 
             int carry = 0;
             for (int i = max_padd_AB(A, B) - 1; i >= 0; i--)
@@ -24,26 +35,22 @@ namespace RSA_Encryption
                 {
                     carry = 0;
                 }
-                C.insert(sum);
+                ret.get_data().insert(sum);
             }
 
             if (carry != 0)
-                C.insert(carry);
+                ret.get_data().insert(carry);
 
-            C.display();
-
-            return C.toVString();
-        }
-
-        public string add(BigInteger A, int x)
-        {
-            return add(A, new BigInteger(x.ToString()));
+            // ret.get_data().display();
+            ret.get_data().reverse();
+            ret.trim();
+            return ret;
         }
 
         /**
          * Careful: it padds the smaller to the difference
          * **/
-        public int max_padd_AB(BigInteger A, BigInteger B)
+        public int max_padd_AB(BigInteger A, BigInteger B, bool bl_Padding = true)
         {
             int szA = A.get_data().get_size();
             int szB = B.get_data().get_size();
@@ -51,14 +58,20 @@ namespace RSA_Encryption
             if (szB > szA)
             {
                 // padd A with difference
-                A.padd(Math.Abs(szB - szA));
-                return B.get_data().get_size();
+                if (bl_Padding)
+                {
+                    A.padd(Math.Abs(szB - szA));
+                }
+                return szB;
             }
             else
             {
                 // padd B with difference
-                B.padd(Math.Abs(szB - szA));
-                return A.get_data().get_size();
+                if (bl_Padding)
+                {
+                    B.padd(Math.Abs(szB - szA));
+                }
+                return szA;
             }
         }
 
@@ -67,9 +80,9 @@ namespace RSA_Encryption
             Vector C = new Vector();
 
             B.set_mode(true); // twos complement mode
-            BigInteger Z = new BigInteger(add(B, 1));
+            BigInteger Z = add(B, 1);
 
-            return add(A, Z);
+            return add_ret_str(A, Z);
         }
 
         public int power(int b, int p)
@@ -88,12 +101,19 @@ namespace RSA_Encryption
             }
         }
 
-        public string sub(BigInteger A, BigInteger B)
+        public string sub_ret_str(BigInteger A, BigInteger B)
         {
-            Vector C = new Vector();
+            BigInteger ret = sub(A, B);
+            return ret.get_data().toFString();
+        }
+
+        public BigInteger sub(BigInteger A, BigInteger B)
+        {
+            if (A < B)
+                return sub(B, A);
+            BigInteger ret = new BigInteger("");
 
             int borrow = 0;
-            int position = 0;
             int base_n = 10;
             for (int i = max_padd_AB(A, B) - 1; i >= 0; i--)
             {
@@ -125,14 +145,15 @@ namespace RSA_Encryption
                 {
                     // borrow = 0;
                 }
-                int diff =  x - y;
-                
-                C.insert(diff);
+                int diff = x - y;
+
+                ret.get_data().insert(diff);
             }
 
-            C.display();
-
-            return C.toVString();
+            // ret.get_data().display();
+            ret.get_data().reverse();
+            ret.trim();
+            return ret;
         }
 
         /**********************************
@@ -148,12 +169,128 @@ namespace RSA_Encryption
                     return (q + 1, r - b)
             }
         **/
-        public string div(BigInteger A, BigInteger B)
+        public BigInteger[] div(BigInteger A, BigInteger B)
         {
-            Vector C = new Vector();
-            C.display();
-            return C.toVString();
+            BigInteger[] ret = new BigInteger[2];
+            if (A < B){
+                ret[0] = new BigInteger("0");
+                ret[1] = A;
+                return ret;
+            }
+            ret = div(A, mul_base_case(B, 2));
+            ret[0] = mul_base_case(ret[0], 2);
+            if (ret[1] < B)
+            {
+                return ret;
+            }
+            else
+            {
+                ret[0] = add(ret[0], 1);
+                ret[1] = sub(ret[1], B);
+            }
+            return ret;
         }
 
+        /*********************************************
+         * Karatsuba T(N) = 3 T(N/2) + Constant * N + Constant
+         * *******************************************
+         * 1. Base Case : X OR Y contains one digit
+         * 1. divide : x -> a & b
+         *             y -> c & d
+         * 2.          a_plus_b = a+b
+         *             c_plus_d = c+d
+         *             
+         * 3. recurse: ac = mul(a, c)
+         *             bd = mul(b, d)
+         *             z = mul(a_plus_b, c_plus_d)
+         *             
+         * 4. combine: sub_r = sub(z, ac)
+         *             r = sub(sub_r, bd)
+         *             padd(ac, N, 0)
+         *             padd(r, N/2, 0)
+         *             ret = r + ac + bd
+         *
+         **/
+        public BigInteger mul(BigInteger X, BigInteger Y)
+        {
+            int n = max_padd_AB(X, Y, true);
+
+            if (X.get_data().get_size() == 1)
+            {
+                return mul_base_case(Y, X.get_data().at(0));
+            }
+            else if (Y.get_data().get_size() == 1)
+            {
+                return mul_base_case(X, Y.get_data().at(0));
+            }
+
+            BigInteger ret = new BigInteger("");
+
+            BigInteger a = new BigInteger(), b = new BigInteger(), c = new BigInteger(), d = new BigInteger();
+
+            X.slice(ref a, 0, n - (n / 2));
+            X.slice(ref b, n - (n / 2), n);
+
+            Y.slice(ref c, 0, n - (n / 2));
+            Y.slice(ref d, n - (n / 2), n);
+            X.trim(); Y.trim();
+            a.trim(); b.trim(); c.trim(); d.trim();
+
+            BigInteger a_plus_b = add(a, b),
+            c_plus_d = add(c, d);
+
+            BigInteger ac = mul(a, c), bd = mul(b, d), z = mul(a_plus_b, c_plus_d);
+
+            // Gauss: 3 - 2 - 1
+            z = sub(z, bd);
+            z = sub(z, ac);
+
+            shl(ref ac, n);
+            shl(ref z, n/2);
+
+            ret = add(ac, bd);
+            ret = add(z, ret);
+
+            return ret;
+        }
+
+        public BigInteger mul_base_case(BigInteger X, int y)
+        {
+            BigInteger ret = new BigInteger("0");
+            for (int i = 0; i < y; i++)
+            {
+                ret = add(X, ret);
+            }
+            return ret;
+        }
+
+        // shift left n times := A * 10 ^ n
+        public void shl(ref BigInteger A, int cnt)
+        {
+            for (int i = 0; i < cnt; i++)
+            {
+                A.get_data().insert(0);
+            }
+        }
+
+        public BigInteger exp(BigInteger B, long E)
+        {
+            if (E == 0)
+                return new BigInteger("1");
+            else if (E == 1)
+                return B;
+            else
+            {
+                BigInteger acc = exp(B, E / 2);
+                if (E % 2 == 0)
+                {
+                    return mul(acc, acc);
+                }
+                else
+                {
+                    return mul(acc, mul(acc, B));
+                }
+            }
+        }
     }
 }

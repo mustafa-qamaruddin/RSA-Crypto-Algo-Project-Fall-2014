@@ -46,6 +46,11 @@ namespace RSA_Encryption
             }
         }
 
+        public bool pop_front()
+        {
+            return remove(0);
+        }
+
         public bool insert_sorted(int val)
         {
             if (insert(val))
@@ -256,7 +261,7 @@ namespace RSA_Encryption
 
         public bool at(int index, int value)
         {
-            if (index < size)
+            if (index <= size)
             {
                 array[index] = value;
                 return true;
@@ -273,6 +278,16 @@ namespace RSA_Encryption
             return this.at(indexer);
         }
         **/
+
+        public string toFString()
+        {
+            char[] ret = new char[size];
+            for (int i = 0; i < size; i++)
+            {
+                ret[i] = (char)(array[i] + '0');
+            }
+            return new string(ret);
+        }
 
         public string toVString()
         {
@@ -292,6 +307,18 @@ namespace RSA_Encryption
         public void clear()
         {
             size = 0;
+        }
+
+        public void reverse()
+        {
+            int i = 0; int j = size - 1;
+            while (i < j)
+            {
+                int tmp = array[i];
+                array[i] = array[j];
+                array[j] = tmp;
+                i++; j--;
+            }
         }
 
         private int[] indices; // holds array sorted indices
